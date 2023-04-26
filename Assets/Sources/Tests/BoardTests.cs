@@ -20,20 +20,20 @@ namespace TicTacToe.Tests
 
         #region SignPlacing
         
-        [TestCase(0, TileSide.X)]
-        public void PlaceCorrectSideTest(int index, TileSide side)
+        [TestCase(0, GameSide.X)]
+        public void PlaceCorrectSideTest(int index, GameSide side)
             => Assert.True(_board.TryPlaceSide(index, side));
         
-        [TestCase(0, TileSide.O)]
-        public void PlaceToAlreadyOccupiedTest(int index, TileSide side)
+        [TestCase(0, GameSide.O)]
+        public void PlaceToAlreadyOccupiedTest(int index, GameSide side)
             => Assert.False(_board.TryPlaceSide(index, side));
         
         [TestCase(1)]
         public void PlaceIndeterminateTest(int index)
-            => Assert.False(_board.TryPlaceSide(index, TileSide.Indeterminate));
+            => Assert.False(_board.TryPlaceSide(index, GameSide.Indeterminate));
         
-        [TestCase(TileSide.X)]
-        public void PlaceOutOfRangeTest(TileSide side)
+        [TestCase(GameSide.X)]
+        public void PlaceOutOfRangeTest(GameSide side)
             => Assert.False(_board.TryPlaceSide(_width * _width, side));
         
         #endregion

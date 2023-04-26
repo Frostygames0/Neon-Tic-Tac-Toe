@@ -2,20 +2,11 @@
 
 namespace TicTacToe.Models.Gameplay
 {
-    public interface ITile
+    public interface ITile : IResettable
     {
-        TileSide Side { get; }
-        event Action<int, TileSide> SideChanged;
+        GameSide Side { get; }
+        event Action<int, GameSide> SideChanged;
         
-        bool TryPlaceSign(TileSide sign);
-
-        void Reset();
-    }
-    
-    public enum TileSide
-    {
-        X,
-        O,
-        Indeterminate
+        bool TryPlace(GameSide side);
     }
 }

@@ -1,30 +1,29 @@
 ﻿using System;
-using TicTacToe.Models.Gameplay;
 using TicTacToe.Views.Factory;
 using UnityEngine;
 
 namespace TicTacToe.Views
 {
-    public class BoardView : MonoBehaviour, IBoardView
+    public class BoardView<T> : MonoBehaviour
     {
-        private ITileView[] _tilesViews;
+        private TileView<T>[] _tilesViews;
         
         public event Action<int> TileClicked;
 
-        public void Init(ITileViewFactory tileViewFactory, int width)
+        public void Init(TileViewFactory<T> tileViewFactory, int width)
         {
-            _tilesViews = new ITileView[width * width];
+            _tilesViews = new TileView<T>[width * width];
             for (int i = 0; i < _tilesViews.Length; i++)
             {
                 _tilesViews[i] = tileViewFactory.Create(i);
             }
         }
 
-        public void UpdateTileSign(int index, TileSide sign)
+        public void UpdateTileSign(int index, T value)
         {
             if (index > _tilesViews.Length || index < 0)
                 return;
-            _tilesViews[index].ChangeSide(sign);
+            _tilesViews[index].Change(value);
         }
 
         public void Activate()
@@ -46,8 +45,8 @@ namespace TicTacToe.Views
                 if (tile is null)
                     throw new InvalidOperationException("Trying to activate a board view before board was even initialized or tile view factory is bad!");
                 
-                tile.Clicked -= OnTileClicked;
                 tile.Deactivate();
+                tile.Clicked -= OnTileClicked;
             }
         }
         

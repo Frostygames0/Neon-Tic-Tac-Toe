@@ -2,6 +2,6 @@
 {
     public interface ISideDeterminator
     {
-        TileSide Determine();
+        GameSide Determine();
     }
 }

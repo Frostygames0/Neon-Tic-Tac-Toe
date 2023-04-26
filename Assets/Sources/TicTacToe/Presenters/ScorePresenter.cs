@@ -6,14 +6,14 @@ namespace TicTacToe.Presenters
     public class ScorePresenter : IManuallyActivated
     {
         private readonly IScoreCounter _model;
-        private readonly IScoreView _view;
+        private readonly TextView[] _views;
 
         private readonly IBoard _board;
         
-        public ScorePresenter(IScoreCounter model, IScoreView view)
+        public ScorePresenter(IScoreCounter model, params TextView[] views)
         {
             _model = model;
-            _view = view;
+            _views = views;
         }
         
         public void Activate()
@@ -22,7 +22,7 @@ namespace TicTacToe.Presenters
         public void Deactivate()
             => _model.ScoreUpdated -= OnScoreUpdated;
         
-        private void OnScoreUpdated(TileSide side, int score)
-            => _view.SetScore(side, score);
+        private void OnScoreUpdated(int side, int score)
+            => _views[side].ChangeText(score.ToString());
     }
 }

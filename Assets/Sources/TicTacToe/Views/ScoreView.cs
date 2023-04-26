@@ -10,7 +10,7 @@ namespace TicTacToe.Views
 
         private int[] _scores = new int[2];
         
-        public void SetScore(TileSide side, int score)
+        public void SetScore(GameSide side, int score)
         {
             var previousScore = _text.text;
             var aboba = previousScore.Split(':');
