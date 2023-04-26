@@ -1,24 +1,29 @@
-﻿using TicTacToe.Models.Gameplay;
+﻿using System;
+using TicTacToe.Models.Commands;
+using TicTacToe.Models.Gameplay;
 using TicTacToe.Models.Gameplay.Factory;
 using TicTacToe.Presenters;
 using TicTacToe.Views;
 using TicTacToe.Views.Factory;
 using UnityEngine;
 
-namespace TicTacToe.Root
+namespace TicTacToe
 {
     public class GameRoot : MonoBehaviour
     {
+        public const int ScoreAmounts = 2;
+        
         [Header("Views")]
-        [SerializeField] private BoardView _boardView;
-        [SerializeField] private ScoreView _scoreView;
+        [SerializeField] private SidedBoardView _boardView;
+        [SerializeField] private TextView[] _scoreViews;
+        [SerializeField] private ButtonView _resetButton;
         
         [Header("Views.Factories")]
-        [SerializeField] private TileViewFactory _tileViewFactory;
+        [SerializeField] private SidedTileViewFactory _tileViewFactory;
         
         [Header("Start Settings")]
         [SerializeField, Range(3, 4)] private int _boardWidth = 3;
-        [SerializeField] private TileSide _startSide = TileSide.O;
+        [SerializeField] private GameSide _startSide = GameSide.O;
         
         private ITileFactory _tileFactory;
 
@@ -28,11 +33,13 @@ namespace TicTacToe.Root
         
         private BoardPresenter _boardPresenter;
         private ScorePresenter _scorePresenter;
+        private CommandButtonPresenter _resetButtonPresenter;
 
         private void Awake()
         {
             InitializeBoard();
             InitializeScore();
+            InitializeButtons();
         }
 
         private void InitializeBoard()
@@ -47,14 +54,20 @@ namespace TicTacToe.Root
 
         private void InitializeScore()
         {
-            _scoreCounter = new ScoreCounter();
-            _scorePresenter = new ScorePresenter(_scoreCounter, _scoreView);
+            _scoreCounter = new ScoreCounter(ScoreAmounts);
+            _scorePresenter = new ScorePresenter(_scoreCounter, _scoreViews);
+        }
+
+        private void InitializeButtons()
+        {
+            _resetButtonPresenter = new CommandButtonPresenter(new RestartBoardCommand(_board), _resetButton);
         }
 
         private void OnEnable()
         {
             _boardPresenter.Activate();
             _scorePresenter.Activate();
+            _resetButtonPresenter.Activate();
             
             _board.Finished += OnFinished;
         }
@@ -63,24 +76,27 @@ namespace TicTacToe.Root
         {
             _boardPresenter.Deactivate();
             _scorePresenter.Deactivate();
+            _resetButtonPresenter.Deactivate();
             
             _board.Finished -= OnFinished;
         }
         
-        private void OnFinished(BoardResult result, TileSide side)
+        private void OnFinished(BoardResult result, GameSide side)
         {
             switch (result)
             {
-                case BoardResult.GameWon:
-                    _scoreCounter.GrantScore(side);
-                    _board.Reset();
-                    break;
-                
                 case BoardResult.StillGoing:
-                case BoardResult.Tie:
-                default:
+                    return;
+                case BoardResult.GameWon:
+                    _scoreCounter.GrantScore((int) side); // TODO AWFUL CONVERSION
                     break;
+                case BoardResult.Tie:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(result), result, "Board Result is out of range! Something is terribly wrong!");
             }
+
+            _board.Reset();
         }
     }
 }

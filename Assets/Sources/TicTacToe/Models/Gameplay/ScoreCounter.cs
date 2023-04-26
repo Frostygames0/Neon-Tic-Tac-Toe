@@ -4,24 +4,22 @@ namespace TicTacToe.Models.Gameplay
 {
     public class ScoreCounter : IScoreCounter
     {
-        public const int ScoreCount = 2;
-        
-        private readonly int[] _scores = new int[ScoreCount];
-        
-        public event Action<TileSide, int> ScoreUpdated;
-        
-        public void GrantScore(TileSide side)
+        private readonly int[] _scores;
+
+        public event Action<int, int> ScoreUpdated;
+
+        public ScoreCounter(int scoreAmounts)
         {
-            if (side == TileSide.Indeterminate)
-                throw new ArgumentOutOfRangeException(nameof(side),"You can't grant victory to the indeterminate side!");
+            _scores = new int[scoreAmounts];
+        }
 
-            var sideNum = (int) side;
-
-            if (sideNum >= _scores.Length || sideNum < 0)
+        public void GrantScore(int side)
+        {
+            if (side >= _scores.Length || side < 0)
                 throw new IndexOutOfRangeException("tile side out of range what?");
 
-            _scores[sideNum] += 1;
-            ScoreUpdated?.Invoke(side, _scores[sideNum]);
+            _scores[side] += 1;
+            ScoreUpdated?.Invoke(side, _scores[side]);
         }
     }
 }

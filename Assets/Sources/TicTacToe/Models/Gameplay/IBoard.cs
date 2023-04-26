@@ -2,14 +2,12 @@
 
 namespace TicTacToe.Models.Gameplay
 {
-    public interface IBoard : IManuallyActivated
+    public interface IBoard : IManuallyActivated, IResettable
     {
-        event Action<BoardResult, TileSide> Finished;
-        event Action<int, TileSide> TileUpdated;
+        event Action<BoardResult, GameSide> Finished;
+        event Action<int, GameSide> TileUpdated;
         
-        bool TryPlaceSide(int index, TileSide side);
-
-        void Reset();
+        bool TryPlaceSide(int index, GameSide side);
     }   
     
     public enum BoardResult

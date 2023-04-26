@@ -2,14 +2,15 @@
 
 namespace TicTacToe.Views.Factory
 {
-    public class TileViewFactory : MonoBehaviour, ITileViewFactory
+    public abstract class TileViewFactory<T> : MonoBehaviour
     {
-        [SerializeField] private TileView _prefab;
         [SerializeField] private Transform _parent;
+        
+        protected abstract TileView<T> Prefab { get; }
 
-        public ITileView Create(int index)
+        public TileView<T> Create(int index)
         {
-            var view = Instantiate(_prefab, _parent);
+            var view = Instantiate(Prefab, _parent);
             view.gameObject.name = "Tile: " + index;
             
             view.Init(index);

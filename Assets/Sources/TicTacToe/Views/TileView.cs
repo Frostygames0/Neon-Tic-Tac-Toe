@@ -1,12 +1,11 @@
 ﻿using System;
-using TicTacToe.Models.Gameplay;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace TicTacToe.Views
 {
-    public class TileView : MonoBehaviour, ITileView
+    public abstract class TileView<T> : MonoBehaviour, IManuallyActivated
     {
         [SerializeField] private Button _button;
         [SerializeField] private TMP_Text _text;
@@ -18,17 +17,13 @@ namespace TicTacToe.Views
         public void Init(int index)
             => _index = index;
 
-        public void ChangeSide(TileSide sign)
+        public void Change(T value)
         {
-            if (sign == TileSide.Indeterminate)
-            {
-                _text.text = "";
-                return;
-            }
-            
-            var convertedSign = sign.ToString("G");
-            _text.text = convertedSign;
+            var updated = UpdateValue(value);
+            _text.SetText(updated);
         }
+
+        protected abstract string UpdateValue(T value);
 
         public void Activate()
             => _button.onClick.AddListener(OnClick);

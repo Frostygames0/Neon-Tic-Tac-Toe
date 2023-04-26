@@ -10,8 +10,8 @@ namespace TicTacToe.Models.Gameplay
         
         private BoardResult _result;
         
-        public event Action<BoardResult, TileSide> Finished;
-        public event Action<int, TileSide> TileUpdated;
+        public event Action<BoardResult, GameSide> Finished;
+        public event Action<int, GameSide> TileUpdated;
 
         public Board(ITileFactory tileFactory, int width)
         {
@@ -24,19 +24,19 @@ namespace TicTacToe.Models.Gameplay
             }
         }
 
-        public bool TryPlaceSide(int index, TileSide side)
+        public bool TryPlaceSide(int index, GameSide side)
         {
             if (_result != BoardResult.StillGoing)
                 return false;
             
-            if (side == TileSide.Indeterminate)
+            if (side == GameSide.Indeterminate)
                 return false;
 
             if (index >= _tiles.Length || index < 0)
                 return false;
 
             var tile = _tiles[index];
-            if (!tile.TryPlaceSign(side))
+            if (!tile.TryPlace(side))
                 return false;
             
             CheckFinishingConditions();
@@ -75,7 +75,7 @@ namespace TicTacToe.Models.Gameplay
             var aboba = CheckWinner();
             Finish(aboba.Item1, aboba.Item2);
 
-            (BoardResult, TileSide) CheckWinner()
+            (BoardResult, GameSide) CheckWinner()
             {
                 var winningCombos = new[]
                 {
@@ -88,19 +88,19 @@ namespace TicTacToe.Models.Gameplay
                 {
                     if (_tiles[tup.Item1].Side == _tiles[tup.Item2].Side &&
                         _tiles[tup.Item2].Side == _tiles[tup.Item3].Side &&
-                        _tiles[tup.Item3].Side == TileSide.O)
-                        return (BoardResult.GameWon, TileSide.O);
+                        _tiles[tup.Item3].Side == GameSide.O)
+                        return (BoardResult.GameWon, GameSide.O);
                     if (_tiles[tup.Item1].Side == _tiles[tup.Item2].Side &&
                         _tiles[tup.Item2].Side == _tiles[tup.Item3].Side &&
-                        _tiles[tup.Item3].Side == TileSide.X)
-                        return (BoardResult.GameWon, TileSide.X);
+                        _tiles[tup.Item3].Side == GameSide.X)
+                        return (BoardResult.GameWon, GameSide.X);
                 }
 
-                return _tiles.All(tile => tile.Side != TileSide.Indeterminate) ? (BoardResult.Tie, TileSide.Indeterminate) : (BoardResult.StillGoing, TileSide.Indeterminate);
+                return _tiles.All(tile => tile.Side != GameSide.Indeterminate) ? (BoardResult.Tie, GameSide.Indeterminate) : (BoardResult.StillGoing, GameSide.Indeterminate);
             }
         }
 
-        private void Finish(BoardResult result, TileSide winner)
+        private void Finish(BoardResult result, GameSide winner)
         {
             if (result == BoardResult.StillGoing)
                 return;
@@ -109,7 +109,7 @@ namespace TicTacToe.Models.Gameplay
             Finished?.Invoke(_result, winner);
         }
 
-        private void OnSideChanged(int index, TileSide newSide)
+        private void OnSideChanged(int index, GameSide newSide)
             => TileUpdated?.Invoke(index, newSide);
     }
 }

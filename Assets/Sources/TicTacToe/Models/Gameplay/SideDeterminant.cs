@@ -2,14 +2,14 @@
 {
     public class SideDeterminant : ISideDeterminator
     {
-        private TileSide _side;
+        private GameSide _side;
 
         private bool _firstTimeChosen;
 
-        public SideDeterminant(TileSide startSide)
+        public SideDeterminant(GameSide startSide)
             => _side = startSide;
 
-        public TileSide Determine()
+        public GameSide Determine()
         {
             if (!_firstTimeChosen)
             {
@@ -17,7 +17,7 @@
                 return _side;
             }
 
-            var changedSide = _side == TileSide.X ? TileSide.O : TileSide.X;
+            var changedSide = _side == GameSide.X ? GameSide.O : GameSide.X;
             return _side = changedSide;
         }
     }

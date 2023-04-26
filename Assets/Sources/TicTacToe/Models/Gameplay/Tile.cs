@@ -6,16 +6,16 @@ namespace TicTacToe.Models.Gameplay
     {
         private readonly int _index;
         
-        public TileSide Side { get; private set; } = TileSide.Indeterminate;
+        public GameSide Side { get; private set; } = GameSide.Indeterminate;
         
-        public event Action<int, TileSide> SideChanged;
+        public event Action<int, GameSide> SideChanged;
 
         public Tile(int index)
             => _index = index;
 
-        public bool TryPlaceSign(TileSide side)
+        public bool TryPlace(GameSide side)
         {
-            if (Side != TileSide.Indeterminate)
+            if (Side != GameSide.Indeterminate)
                 return false;
             
             ChangeSideAndNotify(side);
@@ -23,9 +23,9 @@ namespace TicTacToe.Models.Gameplay
         }
 
         public void Reset()
-            => ChangeSideAndNotify(TileSide.Indeterminate);
+            => ChangeSideAndNotify(GameSide.Indeterminate);
 
-        private void ChangeSideAndNotify(TileSide side)
+        private void ChangeSideAndNotify(GameSide side)
         {
             Side = side;
             SideChanged?.Invoke(_index, Side);

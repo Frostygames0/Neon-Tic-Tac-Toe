@@ -6,11 +6,11 @@ namespace TicTacToe.Presenters
     public class BoardPresenter : IManuallyActivated
     {
         private readonly IBoard _model;
-        private readonly IBoardView _view;
+        private readonly BoardView<GameSide> _view;
         
         private readonly ISideDeterminator _sideDeterminator;
 
-        public BoardPresenter(IBoard model, IBoardView view, ISideDeterminator sideDeterminator)
+        public BoardPresenter(IBoard model, BoardView<GameSide> view, ISideDeterminator sideDeterminator)
         {
             _model = model;
             _view = view;
@@ -36,7 +36,7 @@ namespace TicTacToe.Presenters
             _view.TileClicked -= OnTileClicked;
         }
 
-        private void OnTileUpdated(int index, TileSide side)
+        private void OnTileUpdated(int index, GameSide side)
             => _view.UpdateTileSign(index, side);
 
         private void OnTileClicked(int index)
