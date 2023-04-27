@@ -2,12 +2,16 @@
 {
     public class SideDeterminator : ISideDeterminator
     {
+        private readonly GameSide _startSide;
         private GameSide _side;
 
         private bool _firstTimeChosen;
 
         public SideDeterminator(GameSide startSide)
-            => _side = startSide;
+        {
+            _startSide = startSide;
+            _side = _startSide;
+        }
 
         public GameSide Determine()
         {
@@ -23,7 +27,7 @@
 
         public void Reset()
         {
-            _side = GameSide.Indeterminate;
+            _side = _startSide;
             _firstTimeChosen = false;
         }
     }

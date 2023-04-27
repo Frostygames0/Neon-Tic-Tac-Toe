@@ -1120,7 +1120,7 @@ MonoBehaviour:
   _resetButton: {fileID: 120672911}
   _clickableValueViewFactory: {fileID: 713709183}
   _boardWidth: 3
-  _startSide: 1
+  _startSide: 0
 --- !u!4 &1996418678
 Transform:
   m_ObjectHideFlags: 0
