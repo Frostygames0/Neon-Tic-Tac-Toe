@@ -6,6 +6,8 @@ namespace TicTacToe.Models.Gameplay
     {
         private readonly int[] _scores;
 
+        public int ScoreAmounts => _scores.Length;
+        
         public event Action<int, int> ScoreUpdated;
 
         public ScoreCounter(int scoreAmounts)
@@ -13,13 +15,14 @@ namespace TicTacToe.Models.Gameplay
             _scores = new int[scoreAmounts];
         }
 
-        public void GrantScore(int side)
+        public bool TryGrantScore(int score)
         {
-            if (side >= _scores.Length || side < 0)
-                throw new IndexOutOfRangeException("tile side out of range what?");
+            if (score >= ScoreAmounts || score < 0)
+                return false;
 
-            _scores[side] += 1;
-            ScoreUpdated?.Invoke(side, _scores[side]);
+            _scores[score] += 1;
+            ScoreUpdated?.Invoke(score, _scores[score]);
+            return true;
         }
     }
 }

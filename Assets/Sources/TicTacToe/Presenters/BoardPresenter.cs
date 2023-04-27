@@ -20,7 +20,6 @@ namespace TicTacToe.Presenters
 
         public void Activate()
         {
-            _model.Activate();
             _view.Activate();
             
             _model.TileUpdated += OnTileUpdated;
@@ -29,7 +28,6 @@ namespace TicTacToe.Presenters
 
         public void Deactivate()
         {
-            _model.Deactivate();
             _view.Deactivate();
             
             _model.TileUpdated -= OnTileUpdated;

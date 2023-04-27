@@ -2,7 +2,7 @@
 
 namespace TicTacToe.Models.Gameplay
 {
-    public interface IBoard : IManuallyActivated, IResettable
+    public interface IBoard : IResettable
     {
         event Action<BoardResult, GameSide> Finished;
         event Action<int, GameSide> TileUpdated;

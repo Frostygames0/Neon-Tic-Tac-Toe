@@ -6,12 +6,12 @@ namespace TicTacToe.Views.Factory
     {
         [SerializeField] private Transform _parent;
         
-        protected abstract TileView<T> Prefab { get; }
+        protected abstract ClickableValueView<T> Prefab { get; }
 
-        public TileView<T> Create(int index)
+        public ClickableValueView<T> Create(int index)
         {
             var view = Instantiate(Prefab, _parent);
-            view.gameObject.name = "Tile: " + index;
+            view.gameObject.name = "Clickable View: " + index;
             
             view.Init(index);
             

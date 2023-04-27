@@ -1,12 +1,12 @@
 ﻿namespace TicTacToe.Models.Gameplay
 {
-    public class SideDeterminant : ISideDeterminator
+    public class SideDeterminator : ISideDeterminator
     {
         private GameSide _side;
 
         private bool _firstTimeChosen;
 
-        public SideDeterminant(GameSide startSide)
+        public SideDeterminator(GameSide startSide)
             => _side = startSide;
 
         public GameSide Determine()
@@ -17,7 +17,7 @@
                 return _side;
             }
 
-            var changedSide = _side == GameSide.X ? GameSide.O : GameSide.X;
+            var changedSide = _side == GameSide.Cross ? GameSide.Circle : GameSide.Cross;
             return _side = changedSide;
         }
     }

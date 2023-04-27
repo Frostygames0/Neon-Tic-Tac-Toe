@@ -6,13 +6,13 @@ namespace TicTacToe.Views
 {
     public class BoardView<T> : MonoBehaviour
     {
-        private TileView<T>[] _tilesViews;
+        private ClickableValueView<T>[] _tilesViews;
         
         public event Action<int> TileClicked;
 
         public void Init(TileViewFactory<T> tileViewFactory, int width)
         {
-            _tilesViews = new TileView<T>[width * width];
+            _tilesViews = new ClickableValueView<T>[width * width];
             for (int i = 0; i < _tilesViews.Length; i++)
             {
                 _tilesViews[i] = tileViewFactory.Create(i);

@@ -2,8 +2,8 @@
 {
     public enum GameSide
     {
-        X,
-        O,
+        Cross,
+        Circle,
         Indeterminate
     }
 }

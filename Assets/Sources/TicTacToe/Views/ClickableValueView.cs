@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace TicTacToe.Views
 {
-    public abstract class TileView<T> : MonoBehaviour, IManuallyActivated
+    public abstract class ClickableValueView<T> : MonoBehaviour, IManuallyActivated
     {
         [SerializeField] private Button _button;
         [SerializeField] private TMP_Text _text;

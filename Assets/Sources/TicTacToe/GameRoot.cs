@@ -1,7 +1,6 @@
 ﻿using System;
 using TicTacToe.Models.Commands;
 using TicTacToe.Models.Gameplay;
-using TicTacToe.Models.Gameplay.Factory;
 using TicTacToe.Presenters;
 using TicTacToe.Views;
 using TicTacToe.Views.Factory;
@@ -23,10 +22,8 @@ namespace TicTacToe
         
         [Header("Start Settings")]
         [SerializeField, Range(3, 4)] private int _boardWidth = 3;
-        [SerializeField] private GameSide _startSide = GameSide.O;
+        [SerializeField] private GameSide _startSide = GameSide.Circle;
         
-        private ITileFactory _tileFactory;
-
         private IBoard _board;
         private IScoreCounter _scoreCounter;
         private ISideDeterminator _determinator;
@@ -44,10 +41,9 @@ namespace TicTacToe
 
         private void InitializeBoard()
         {
-            _determinator = new SideDeterminant(_startSide);
-            _tileFactory = new TileFactory();
-            
-            _board = new Board(_tileFactory, _boardWidth);
+            _determinator = new SideDeterminator(_startSide);
+
+            _board = new Board(_boardWidth);
             _boardView.Init(_tileViewFactory, _boardWidth);
             _boardPresenter = new BoardPresenter(_board, _boardView, _determinator);
         }
@@ -88,7 +84,7 @@ namespace TicTacToe
                 case BoardResult.StillGoing:
                     return;
                 case BoardResult.GameWon:
-                    _scoreCounter.GrantScore((int) side); // TODO AWFUL CONVERSION
+                    _scoreCounter.TryGrantScore((int) side); // TODO AWFUL CONVERSION
                     break;
                 case BoardResult.Tie:
                     break;

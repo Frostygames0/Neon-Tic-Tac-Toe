@@ -1,4 +1,4 @@
-﻿namespace TicTacToe.Models.Gameplay
+﻿namespace TicTacToe
 {
     public interface IResettable
     {

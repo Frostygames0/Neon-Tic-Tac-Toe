@@ -4,8 +4,10 @@ namespace TicTacToe.Models.Gameplay
 {
     public interface IScoreCounter
     {
+        public int ScoreAmounts { get; }
+        
         event Action<int, int> ScoreUpdated;
 
-        void GrantScore(int side);
+        bool TryGrantScore(int side);
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace TicTacToe.Views
 {
-    public class SidedTileView : TileView<GameSide>
+    public class SidedClickableValueView : ClickableValueView<GameSide>
     {
         protected override string UpdateValue(GameSide value)
         {

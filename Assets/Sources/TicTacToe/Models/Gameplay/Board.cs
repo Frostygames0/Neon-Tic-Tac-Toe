@@ -1,26 +1,25 @@
 ﻿using System;
 using System.Linq;
-using TicTacToe.Models.Gameplay.Factory;
 
 namespace TicTacToe.Models.Gameplay
 {
     public class Board : IBoard
     {
-        private readonly ITile[] _tiles;
+        private readonly Tile[] _tiles;
         
         private BoardResult _result;
         
         public event Action<BoardResult, GameSide> Finished;
         public event Action<int, GameSide> TileUpdated;
 
-        public Board(ITileFactory tileFactory, int width)
+        public Board(int width)
         {
-            _tiles = new ITile[width * width];
+            _tiles = new Tile[width * width];
             _result = BoardResult.StillGoing;
 
             for (int i = 0; i < _tiles.Length; i++)
             {
-                _tiles[i] = tileFactory.Create(i);
+                _tiles[i] = new Tile();
             }
         }
 
@@ -39,34 +38,21 @@ namespace TicTacToe.Models.Gameplay
             if (!tile.TryPlace(side))
                 return false;
             
+            TileUpdated?.Invoke(index, tile.Side);
+            
             CheckFinishingConditions();
             return true;
         }
 
         public void Reset()
         {
-            foreach (var tile in _tiles)
+            for(int i = 0; i < _tiles.Length; i++)
             {
-                tile.Reset();
+                _tiles[i].Reset();
+                TileUpdated?.Invoke(i, GameSide.Indeterminate);
             }
 
             _result = BoardResult.StillGoing;
-        }
-        
-        public void Activate()
-        {
-            foreach (var tile in _tiles)
-            {
-                tile.SideChanged += OnSideChanged;
-            }
-        }
-
-        public void Deactivate()
-        {
-            foreach (var tile in _tiles)
-            {
-                tile.SideChanged -= OnSideChanged;
-            }
         }
 
         // TODO EXTREMELY TERRIBLE, ABSOLUTELY DISGUSTING
@@ -88,12 +74,12 @@ namespace TicTacToe.Models.Gameplay
                 {
                     if (_tiles[tup.Item1].Side == _tiles[tup.Item2].Side &&
                         _tiles[tup.Item2].Side == _tiles[tup.Item3].Side &&
-                        _tiles[tup.Item3].Side == GameSide.O)
-                        return (BoardResult.GameWon, GameSide.O);
+                        _tiles[tup.Item3].Side == GameSide.Circle)
+                        return (BoardResult.GameWon, GameSide.Circle);
                     if (_tiles[tup.Item1].Side == _tiles[tup.Item2].Side &&
                         _tiles[tup.Item2].Side == _tiles[tup.Item3].Side &&
-                        _tiles[tup.Item3].Side == GameSide.X)
-                        return (BoardResult.GameWon, GameSide.X);
+                        _tiles[tup.Item3].Side == GameSide.Cross)
+                        return (BoardResult.GameWon, GameSide.Cross);
                 }
 
                 return _tiles.All(tile => tile.Side != GameSide.Indeterminate) ? (BoardResult.Tie, GameSide.Indeterminate) : (BoardResult.StillGoing, GameSide.Indeterminate);
@@ -109,7 +95,23 @@ namespace TicTacToe.Models.Gameplay
             Finished?.Invoke(_result, winner);
         }
 
-        private void OnSideChanged(int index, GameSide newSide)
-            => TileUpdated?.Invoke(index, newSide);
+        private class Tile : IResettable
+        {
+            public GameSide Side { get; private set; } = GameSide.Indeterminate;
+
+            public bool TryPlace(GameSide side)
+            {
+                if (Side != GameSide.Indeterminate)
+                    return false;
+
+                Side = side;
+                return true;
+            }
+            
+            public void Reset()
+            {
+                Side = GameSide.Indeterminate;
+            }
+        }
     }
 }
