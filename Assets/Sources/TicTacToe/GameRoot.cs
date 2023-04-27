@@ -18,7 +18,7 @@ namespace TicTacToe
         [SerializeField] private ButtonView _resetButton;
         
         [Header("Views.Factories")]
-        [SerializeField] private SidedTileViewFactory _tileViewFactory;
+        [SerializeField] private SidedClickableValueViewFactory _clickableValueViewFactory;
         
         [Header("Start Settings")]
         [SerializeField, Range(3, 4)] private int _boardWidth = 3;
@@ -44,7 +44,7 @@ namespace TicTacToe
             _determinator = new SideDeterminator(_startSide);
 
             _board = new Board(_boardWidth);
-            _boardView.Init(_tileViewFactory, _boardWidth);
+            _boardView.Init(_clickableValueViewFactory, _boardWidth);
             _boardPresenter = new BoardPresenter(_board, _boardView, _determinator);
         }
 

@@ -10,12 +10,12 @@ namespace TicTacToe.Views
         
         public event Action<int> TileClicked;
 
-        public void Init(TileViewFactory<T> tileViewFactory, int width)
+        public void Init(ClickableValueViewFactory<T> clickableValueViewFactory, int width)
         {
             _tilesViews = new ClickableValueView<T>[width * width];
             for (int i = 0; i < _tilesViews.Length; i++)
             {
-                _tilesViews[i] = tileViewFactory.Create(i);
+                _tilesViews[i] = clickableValueViewFactory.Create(i);
             }
         }
 

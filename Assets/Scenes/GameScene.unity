@@ -1118,7 +1118,7 @@ MonoBehaviour:
   - {fileID: 769808565}
   - {fileID: 2064142482}
   _resetButton: {fileID: 120672911}
-  _tileViewFactory: {fileID: 713709183}
+  _clickableValueViewFactory: {fileID: 713709183}
   _boardWidth: 3
   _startSide: 1
 --- !u!4 &1996418678

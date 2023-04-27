@@ -2,7 +2,7 @@
 
 namespace TicTacToe.Views.Factory
 {
-    public abstract class TileViewFactory<T> : MonoBehaviour
+    public abstract class ClickableValueViewFactory<T> : MonoBehaviour
     {
         [SerializeField] private Transform _parent;
         

@@ -2,7 +2,7 @@
 
 namespace TicTacToe.Views.Factory
 {
-    public class SidedTileViewFactory : TileViewFactory<GameSide>
+    public class SidedClickableValueViewFactory : ClickableValueViewFactory<GameSide>
     {
         [SerializeField] private SidedClickableValueView _prefab;
 
