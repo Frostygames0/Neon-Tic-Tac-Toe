@@ -1,6 +1,6 @@
 ﻿namespace TicTacToe.Models.Gameplay
 {
-    public interface ISideDeterminator
+    public interface ISideDeterminator : IResettable
     {
         GameSide Determine();
     }

@@ -56,7 +56,7 @@ namespace TicTacToe
 
         private void InitializeButtons()
         {
-            _resetButtonPresenter = new CommandButtonPresenter(new RestartCommand(_board, _scoreCounter), _resetButton);
+            _resetButtonPresenter = new CommandButtonPresenter(new RestartCommand(_board, _scoreCounter, _determinator), _resetButton);
         }
 
         private void OnEnable()

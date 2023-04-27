@@ -20,5 +20,11 @@
             var changedSide = _side == GameSide.Cross ? GameSide.Circle : GameSide.Cross;
             return _side = changedSide;
         }
+
+        public void Reset()
+        {
+            _side = GameSide.Indeterminate;
+            _firstTimeChosen = false;
+        }
     }
 }
