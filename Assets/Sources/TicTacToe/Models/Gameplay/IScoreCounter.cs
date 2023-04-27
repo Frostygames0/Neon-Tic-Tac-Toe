@@ -2,7 +2,7 @@
 
 namespace TicTacToe.Models.Gameplay
 {
-    public interface IScoreCounter
+    public interface IScoreCounter : IResettable
     {
         public int ScoreAmounts { get; }
         

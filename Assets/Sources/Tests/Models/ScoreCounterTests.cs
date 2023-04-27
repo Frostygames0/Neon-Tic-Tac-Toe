@@ -51,5 +51,22 @@ namespace TicTacToe.Tests.Models
             
             Assert.False(negativeNumResult);
         }
+        
+        [TestCase(0)]
+        public void Reset_SuccessfullyResets_ReturnsTrue(int index)
+        {
+            _scoreCounter.TryGrantScore(index);
+            
+            _scoreCounter.ScoreUpdated += (ind, score) =>
+            {
+                Assert.True(ind == index);
+                Assert.True(score == 0);
+                Assert.Pass();
+            };
+            
+            _scoreCounter.Reset();
+            
+            Assert.Fail();
+        }
     }
 }

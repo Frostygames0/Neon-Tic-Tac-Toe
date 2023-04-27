@@ -24,5 +24,14 @@ namespace TicTacToe.Models.Gameplay
             ScoreUpdated?.Invoke(score, _scores[score]);
             return true;
         }
+
+        public void Reset()
+        {
+            for (int i = 0; i < ScoreAmounts; i++)
+            {
+                _scores[i] = 0;
+                ScoreUpdated?.Invoke(i, _scores[i]);
+            }
+        }
     }
 }
