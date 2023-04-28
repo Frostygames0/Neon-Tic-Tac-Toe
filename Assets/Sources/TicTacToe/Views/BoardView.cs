@@ -4,31 +4,32 @@ using UnityEngine;
 
 namespace TicTacToe.Views
 {
-    public class BoardView<T> : MonoBehaviour
+    public class BoardView : MonoBehaviour, IBoardView
     {
-        private ClickableValueView<T>[] _tilesViews;
+        private IClickableTextView[] _clickableTextViews;
         
         public event Action<int> TileClicked;
 
-        public void Init(ClickableValueViewFactory<T> clickableValueViewFactory, int width)
+        public void Init(int width, IClickableTextViewFactory factory)
         {
-            _tilesViews = new ClickableValueView<T>[width * width];
-            for (int i = 0; i < _tilesViews.Length; i++)
+            _clickableTextViews = new IClickableTextView[width * width];
+            
+            for (int i = 0; i < _clickableTextViews.Length; i++)
             {
-                _tilesViews[i] = clickableValueViewFactory.Create(i);
+                _clickableTextViews[i] = factory.Create(i);
             }
         }
 
-        public void UpdateTileSign(int index, T value)
+        public void UpdateTileText(int index, string value)
         {
-            if (index > _tilesViews.Length || index < 0)
+            if (index > _clickableTextViews.Length || index < 0)
                 return;
-            _tilesViews[index].Change(value);
+            _clickableTextViews[index].ChangeText(value);
         }
 
         public void Activate()
         {
-            foreach (var tile in _tilesViews)
+            foreach (var tile in _clickableTextViews)
             {
                 if (tile is null)
                     throw new InvalidOperationException("Trying to activate a board view before board was even initialized or tile view factory is bad!");
@@ -40,7 +41,7 @@ namespace TicTacToe.Views
 
         public void Deactivate()
         {
-            foreach (var tile in _tilesViews)
+            foreach (var tile in _clickableTextViews)
             {
                 if (tile is null)
                     throw new InvalidOperationException("Trying to activate a board view before board was even initialized or tile view factory is bad!");

@@ -1,14 +1,15 @@
 ﻿using TicTacToe.Models.Commands;
 using TicTacToe.Views;
+using UnityEngine.UI;
 
 namespace TicTacToe.Presenters
 {
     public class CommandButtonPresenter : IManuallyActivated
     {
         private readonly ICommand _command;
-        private readonly ButtonView _view;
+        private readonly Button _view;
         
-        public CommandButtonPresenter(ICommand command, ButtonView view)
+        public CommandButtonPresenter(ICommand command, Button view)
         {
             _command = command;
             _view = view;
@@ -16,10 +17,10 @@ namespace TicTacToe.Presenters
 
 
         public void Activate()
-            => _view.Pressed += OnPressed;
+            => _view.onClick.AddListener(OnPressed);
 
         public void Deactivate()
-            => _view.Pressed -= OnPressed;
+            => _view.onClick.RemoveListener(OnPressed);
 
         private void OnPressed()
             => _command.Execute();

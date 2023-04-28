@@ -239,7 +239,6 @@ GameObject:
   - component: {fileID: 120672910}
   - component: {fileID: 120672909}
   - component: {fileID: 120672908}
-  - component: {fileID: 120672911}
   m_Layer: 5
   m_Name: Reset
   m_TagString: Untagged
@@ -349,19 +348,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 120672906}
   m_CullTransparentMesh: 1
---- !u!114 &120672911
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 120672906}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e2275e7e3b944aeeade7f5432d5e3914, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _button: {fileID: 120672908}
 --- !u!850595691 &251793226
 LightingSettings:
   m_ObjectHideFlags: 0
@@ -553,8 +539,8 @@ GameObject:
   - component: {fileID: 713709179}
   - component: {fileID: 713709181}
   - component: {fileID: 713709182}
-  - component: {fileID: 713709184}
   - component: {fileID: 713709183}
+  - component: {fileID: 713709184}
   m_Layer: 5
   m_Name: Board
   m_TagString: Untagged
@@ -629,11 +615,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 713709178}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 056db28914af444192bd65e803b0e420, type: 3}
+  m_Script: {fileID: 11500000, guid: 1ef322f0115f470ba10f59292f5ee982, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _parent: {fileID: 713709179}
   _prefab: {fileID: 6369078522562957876, guid: 78a4ac74cc5e2ee46b65c0c844496a85, type: 3}
+  _parent: {fileID: 713709179}
 --- !u!114 &713709184
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -643,7 +629,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 713709178}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 51d2d97ad58046258f9b9801674cf86a, type: 3}
+  m_Script: {fileID: 11500000, guid: 56b98b529cb946099592b3dedfb0eb2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &769808560
@@ -1115,10 +1101,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _boardView: {fileID: 713709184}
   _scoreViews:
-  - {fileID: 769808565}
-  - {fileID: 2064142482}
-  _resetButton: {fileID: 120672911}
-  _clickableValueViewFactory: {fileID: 713709183}
+  - {fileID: 769808563}
+  - {fileID: 2064142483}
+  _resetButton: {fileID: 120672908}
+  _clickableTextViewFactory: {fileID: 713709183}
   _boardWidth: 3
   _startSide: 0
 --- !u!4 &1996418678

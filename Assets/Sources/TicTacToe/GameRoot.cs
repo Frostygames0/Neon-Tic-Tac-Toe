@@ -4,7 +4,9 @@ using TicTacToe.Models.Gameplay;
 using TicTacToe.Presenters;
 using TicTacToe.Views;
 using TicTacToe.Views.Factory;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace TicTacToe
 {
@@ -13,13 +15,13 @@ namespace TicTacToe
         public const int ScoreAmounts = 2;
         
         [Header("Views")]
-        [SerializeField] private SidedBoardView _boardView;
-        [SerializeField] private TextView[] _scoreViews;
-        [SerializeField] private ButtonView _resetButton;
+        [SerializeField] private BoardView _boardView;
+        [SerializeField] private TMP_Text[] _scoreViews;
+        [SerializeField] private Button _resetButton;
         
         [Header("Views.Factories")]
-        [SerializeField] private SidedClickableValueViewFactory _clickableValueViewFactory;
-        
+        [SerializeField] private ClickableTextViewFactory _clickableTextViewFactory;
+
         [Header("Start Settings")]
         [SerializeField, Range(3, 4)] private int _boardWidth = 3;
         [SerializeField] private GameSide _startSide = GameSide.Circle;
@@ -44,7 +46,7 @@ namespace TicTacToe
             _determinator = new SideDeterminator(_startSide);
 
             _board = new Board(_boardWidth);
-            _boardView.Init(_clickableValueViewFactory, _boardWidth);
+            _boardView.Init(_boardWidth, _clickableTextViewFactory);
             _boardPresenter = new BoardPresenter(_board, _boardView, _determinator);
         }
 
@@ -93,6 +95,7 @@ namespace TicTacToe
             }
 
             _board.Reset();
+            _determinator.Reset();
         }
     }
 }

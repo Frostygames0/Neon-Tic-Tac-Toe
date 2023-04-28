@@ -93,5 +93,28 @@ namespace TicTacToe.Tests.Models
             
             Assert.Fail();
         }
+        
+        [Test]
+        public void Finished_RaisesCorrectlyForTie_ReturnsTrue()
+        {
+            _board.Finished += (res, gameSide) =>
+            {
+                Assert.True(res == BoardResult.Tie);
+                Assert.True(gameSide == GameSide.Indeterminate);
+                Assert.Pass();
+            };
+
+            _board.TryPlaceSide(0, GameSide.Circle);
+            _board.TryPlaceSide(1, GameSide.Circle);
+            _board.TryPlaceSide(2, GameSide.Cross);
+            _board.TryPlaceSide(3, GameSide.Cross);
+            _board.TryPlaceSide(4, GameSide.Cross);
+            _board.TryPlaceSide(5, GameSide.Circle);
+            _board.TryPlaceSide(6, GameSide.Circle);
+            _board.TryPlaceSide(7, GameSide.Cross);
+            _board.TryPlaceSide(8, GameSide.Circle);
+            
+            Assert.Fail();
+        }
     }
 }
