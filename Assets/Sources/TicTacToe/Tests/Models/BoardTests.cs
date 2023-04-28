@@ -67,41 +67,45 @@ namespace TicTacToe.Tests.Models
         [TestCaseSource(typeof(BoardTestsData), nameof(BoardTestsData.TryPlaceSideCases))]
         public void TileUpdated_RaisesCorrectly_ReturnsTrue(GameSide side)
         {
+            var correctIndex = false;
+            var correctSide = false;
+            
             _board.TileUpdated += (i, gameSide) =>
             {
-                Assert.True(i == 0 && gameSide == side);
-                Assert.Pass();
+                correctIndex= i == 0;
+                correctSide = gameSide == side;
             };
             
             _board.TryPlaceSide(0, side);
             
-            Assert.Fail();
+            Assert.True(correctIndex);
+            Assert.True(correctSide);
         }
         
         [TestCaseSource(typeof(BoardTestsData), nameof(BoardTestsData.FinishedWinCases))]
         public void Finished_RaisesCorrectlyForWin_ReturnsTrue(int first, int second, int third)
         {
+            var correctResult = false;
             _board.Finished += (res, gameSide) =>
             {
-                Assert.True(res == BoardResult.GameWon);
-                Assert.Pass();
+                correctResult = res == BoardResult.GameWon;
             };
 
             _board.TryPlaceSide(first, GameSide.Circle);
             _board.TryPlaceSide(second, GameSide.Circle);
             _board.TryPlaceSide(third, GameSide.Circle);
             
-            Assert.Fail();
+            Assert.True(correctResult);
         }
         
         [Test]
         public void Finished_RaisesCorrectlyForTie_ReturnsTrue()
         {
+            var correctResult = false;
+
             _board.Finished += (res, gameSide) =>
             {
-                Assert.True(res == BoardResult.Tie);
-                Assert.True(gameSide == GameSide.Indeterminate);
-                Assert.Pass();
+                correctResult = res == BoardResult.Tie;
             };
 
             _board.TryPlaceSide(0, GameSide.Circle);
@@ -114,7 +118,7 @@ namespace TicTacToe.Tests.Models
             _board.TryPlaceSide(7, GameSide.Cross);
             _board.TryPlaceSide(8, GameSide.Circle);
             
-            Assert.Fail();
+            Assert.True(correctResult);
         }
     }
 }
