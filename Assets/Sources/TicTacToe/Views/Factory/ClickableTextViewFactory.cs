@@ -1,20 +1,7 @@
-﻿using UnityEngine;
-
-namespace TicTacToe.Views.Factory
+﻿namespace TicTacToe.Views.Factory
 {
-    public class ClickableTextViewFactory : MonoBehaviour, IClickableTextViewFactory
+    // For those who don't know, Unity's serialization system hates generics and forces you to do this :)
+    public class ClickableTextViewFactory : SimplePrefabFactory<ClickableTextView>
     {
-        [SerializeField] private ClickableTextView _prefab;
-        [SerializeField] private Transform _parent;
-
-        public IClickableTextView Create(int index)
-        {
-            var view = Instantiate(_prefab, _parent);
-            
-            view.Init(index);
-            view.gameObject.name = "Clickable Text View: " + index;
-            
-            return view;
-        }
     }
 }

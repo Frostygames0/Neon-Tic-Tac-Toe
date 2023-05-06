@@ -1,16 +1,17 @@
 ﻿using System;
 
-namespace TicTacToe
+namespace TicTacToe.Shared
 {
     public enum GameSide
     {
-        Cross,
-        Circle,
-        Indeterminate
+        Cross = 0,
+        Circle = 1,
+        Indeterminate = -1
     }
 
     public static class GameSideExtensions
     {
+        // TODO Remake too
         public static string ConvertToCoolString(this GameSide side)
         {
             var signInText = "";

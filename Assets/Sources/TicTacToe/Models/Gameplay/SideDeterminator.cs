@@ -1,4 +1,6 @@
-﻿namespace TicTacToe.Models.Gameplay
+﻿using TicTacToe.Shared;
+
+namespace TicTacToe.Models.Gameplay
 {
     public class SideDeterminator : ISideDeterminator
     {

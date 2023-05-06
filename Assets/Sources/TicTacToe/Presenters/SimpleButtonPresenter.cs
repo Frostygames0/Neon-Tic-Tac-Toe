@@ -1,21 +1,20 @@
-﻿using TicTacToe.Models.Commands;
-using TicTacToe.Views;
+﻿using System;
+using TicTacToe.Shared;
 using UnityEngine.UI;
 
 namespace TicTacToe.Presenters
 {
-    public class CommandButtonPresenter : IManuallyActivated
+    public class SimpleButtonPresenter : IActivatable
     {
-        private readonly ICommand _command;
+        private readonly Action _onClick;
         private readonly Button _view;
         
-        public CommandButtonPresenter(ICommand command, Button view)
+        public SimpleButtonPresenter(Button view, Action onClick)
         {
-            _command = command;
+            _onClick = onClick;
             _view = view;
         }
-
-
+        
         public void Activate()
             => _view.onClick.AddListener(OnPressed);
 
@@ -23,6 +22,6 @@ namespace TicTacToe.Presenters
             => _view.onClick.RemoveListener(OnPressed);
 
         private void OnPressed()
-            => _command.Execute();
+            => _onClick?.Invoke();
     }
 }

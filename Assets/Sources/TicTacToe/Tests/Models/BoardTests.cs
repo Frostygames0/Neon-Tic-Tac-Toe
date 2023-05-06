@@ -1,99 +1,91 @@
 using NUnit.Framework;
 using TicTacToe.Models.Gameplay;
+using TicTacToe.Shared;
 
 namespace TicTacToe.Tests.Models
 {
-    [TestFixture(3)]
     public class BoardTests
     {
-        private readonly int _width;
+        private const int Length = 8;
         
         private IBoard _board;
 
-        public BoardTests(int width)
-        {
-            _width = width;
-        }
-        
         [SetUp]
         public void SetUp()
         {
-            _board = new Board(_width);
+            _board = new Board();
         }
         
-        [TestCaseSource(typeof(BoardTestsData), nameof(BoardTestsData.TryPlaceSideCases))]
-        public void TryPlaceSide_CorrectPlacing_ReturnsTrue(GameSide side)
+        [Test]
+        public void TryPlaceSide_CorrectPlacing_ReturnsTrue([Range(0, Length)] int index, [ValueSource(typeof(TestsData), nameof(TestsData.GameSideCases))] GameSide side)
         {
-            var canPlaceCorrect = _board.TryPlaceSide(0, side);
+            var canPlaceCorrect = _board.TryMove(index, side);
             
             Assert.True(canPlaceCorrect);
         }
         
-        [TestCaseSource(typeof(BoardTestsData), nameof(BoardTestsData.TryPlaceSideCases))]
-        public void TryPlaceSide_OutOfBoundsPositive_ReturnsFalse(GameSide side)
+        [Test]
+        public void TryPlaceSide_OutOfBoundsPositive_ReturnsFalse([ValueSource(typeof(TestsData), nameof(TestsData.GameSideCases))] GameSide side)
         {
-            var positiveNumResult = _board.TryPlaceSide(_width * _width, side);
+            var positiveNumResult = _board.TryMove(Length + 1, side);
 
             Assert.False(positiveNumResult);
         }
         
-        [TestCaseSource(typeof(BoardTestsData), nameof(BoardTestsData.TryPlaceSideCases))]
-        public void TryPlaceSide_OutOfBoundsNegative_ReturnsFalse(GameSide side)
+        [Test]
+        public void TryPlaceSide_OutOfBoundsNegative_ReturnsFalse([ValueSource(typeof(TestsData), nameof(TestsData.GameSideCases))] GameSide side)
         {
-            var negativeNumResult = _board.TryPlaceSide(-1, side);
+            var negativeNumResult = _board.TryMove(-1, side);
             
             Assert.False(negativeNumResult);
         }
         
         [Test]
-        public void TryPlaceSide_Indeterminate_ReturnsFalse()
+        public void TryPlaceSide_Indeterminate_ReturnsFalse([Range(0, Length)] int index)
         {
-            var result = _board.TryPlaceSide(0, GameSide.Indeterminate);
+            var result = _board.TryMove(index, GameSide.Indeterminate);
             
             Assert.False(result);
         }
         
-        [TestCaseSource(typeof(BoardTestsData), nameof(BoardTestsData.TryPlaceSideCases))]
-        public void Reset_CanPlaceAgain_ReturnsTrue(GameSide side)
+        [Test]
+        public void Reset_CanPlaceAgain_ReturnsTrue([Range(0, Length)] int index, [ValueSource(typeof(TestsData), nameof(TestsData.GameSideCases))] GameSide side)
         {
-            _board.TryPlaceSide(0, GameSide.Circle);
+            _board.TryMove(index, GameSide.Circle);
             _board.Reset();
             
-            var canBePlacedAgain = _board.TryPlaceSide(0, GameSide.Circle);
+            var canBePlacedAgain = _board.TryMove(index, GameSide.Circle);
             
             Assert.True(canBePlacedAgain);
         }
         
-        [TestCaseSource(typeof(BoardTestsData), nameof(BoardTestsData.TryPlaceSideCases))]
-        public void TileUpdated_RaisesCorrectly_ReturnsTrue(GameSide side)
+        [Test]
+        public void TileUpdated_RaisesCorrectly_ReturnsTrue([Range(0, 8)] int index, [ValueSource(typeof(TestsData), nameof(TestsData.GameSideCases))] GameSide side)
         {
             var correctIndex = false;
             var correctSide = false;
             
             _board.TileUpdated += (i, gameSide) =>
             {
-                correctIndex= i == 0;
+                correctIndex = i == index;
                 correctSide = gameSide == side;
             };
             
-            _board.TryPlaceSide(0, side);
+            _board.TryMove(index, side);
             
             Assert.True(correctIndex);
             Assert.True(correctSide);
         }
         
-        [TestCaseSource(typeof(BoardTestsData), nameof(BoardTestsData.FinishedWinCases))]
+        [TestCaseSource(typeof(TestsData), nameof(TestsData.WinningCombosCases))]
         public void Finished_RaisesCorrectlyForWin_ReturnsTrue(int first, int second, int third)
         {
             var correctResult = false;
-            _board.Finished += (res, gameSide) =>
-            {
-                correctResult = res == BoardResult.GameWon;
-            };
+            _board.Finished += (res, _) => correctResult = res == BoardResult.GameWon;
 
-            _board.TryPlaceSide(first, GameSide.Circle);
-            _board.TryPlaceSide(second, GameSide.Circle);
-            _board.TryPlaceSide(third, GameSide.Circle);
+            _board.TryMove(first, GameSide.Circle);
+            _board.TryMove(second, GameSide.Circle);
+            _board.TryMove(third, GameSide.Circle);
             
             Assert.True(correctResult);
         }
@@ -103,20 +95,17 @@ namespace TicTacToe.Tests.Models
         {
             var correctResult = false;
 
-            _board.Finished += (res, gameSide) =>
-            {
-                correctResult = res == BoardResult.Tie;
-            };
+            _board.Finished += (res, _) => correctResult = res == BoardResult.Tie;
 
-            _board.TryPlaceSide(0, GameSide.Circle);
-            _board.TryPlaceSide(1, GameSide.Circle);
-            _board.TryPlaceSide(2, GameSide.Cross);
-            _board.TryPlaceSide(3, GameSide.Cross);
-            _board.TryPlaceSide(4, GameSide.Cross);
-            _board.TryPlaceSide(5, GameSide.Circle);
-            _board.TryPlaceSide(6, GameSide.Circle);
-            _board.TryPlaceSide(7, GameSide.Cross);
-            _board.TryPlaceSide(8, GameSide.Circle);
+            _board.TryMove(0, GameSide.Circle);
+            _board.TryMove(1, GameSide.Circle);
+            _board.TryMove(2, GameSide.Cross);
+            _board.TryMove(3, GameSide.Cross);
+            _board.TryMove(4, GameSide.Cross);
+            _board.TryMove(5, GameSide.Circle);
+            _board.TryMove(6, GameSide.Circle);
+            _board.TryMove(7, GameSide.Cross);
+            _board.TryMove(8, GameSide.Circle);
             
             Assert.True(correctResult);
         }

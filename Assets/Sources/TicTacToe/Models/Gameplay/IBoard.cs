@@ -1,4 +1,5 @@
 ﻿using System;
+using TicTacToe.Shared;
 
 namespace TicTacToe.Models.Gameplay
 {
@@ -7,7 +8,7 @@ namespace TicTacToe.Models.Gameplay
         event Action<BoardResult, GameSide> Finished;
         event Action<int, GameSide> TileUpdated;
         
-        bool TryPlaceSide(int index, GameSide side);
+        bool TryMove(int index, GameSide side);
     }   
     
     public enum BoardResult

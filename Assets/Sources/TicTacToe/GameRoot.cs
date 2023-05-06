@@ -1,7 +1,7 @@
 ﻿using System;
-using TicTacToe.Models.Commands;
 using TicTacToe.Models.Gameplay;
 using TicTacToe.Presenters;
+using TicTacToe.Shared;
 using TicTacToe.Views;
 using TicTacToe.Views.Factory;
 using TMPro;
@@ -10,63 +10,68 @@ using UnityEngine.UI;
 
 namespace TicTacToe
 {
+    // TODO Decompose this class, it's too big
     public class GameRoot : MonoBehaviour
     {
-        public const int ScoreAmounts = 2;
-        
-        [Header("Views")]
-        [SerializeField] private BoardView _boardView;
+        [Header("Gameplay Views")]
+        [SerializeField] private GridClickableTextView _gridClickableTextView;
         [SerializeField] private TMP_Text[] _scoreViews;
-        [SerializeField] private Button _resetButton;
         
-        [Header("Views.Factories")]
+        [Header("UI Views")]
+        [SerializeField] private MessageView _messageView;
+        [SerializeField] private Button _restartButton;
+
+        [Header("View Factories")] 
         [SerializeField] private ClickableTextViewFactory _clickableTextViewFactory;
 
         [Header("Start Settings")]
-        [SerializeField, Range(3, 4)] private int _boardWidth = 3;
         [SerializeField] private GameSide _startSide = GameSide.Circle;
-        
+
         private IBoard _board;
         private IScoreCounter _scoreCounter;
         private ISideDeterminator _determinator;
-        
+
         private BoardPresenter _boardPresenter;
         private ScorePresenter _scorePresenter;
-        private CommandButtonPresenter _resetButtonPresenter;
+
+        private SimpleButtonPresenter _restartButtonPresenter;
+        private MessagePresenter _messagePresenter;
 
         private void Awake()
         {
             InitializeBoard();
             InitializeScore();
-            InitializeButtons();
+            InitializeGeneralUI();
         }
 
         private void InitializeBoard()
         {
             _determinator = new SideDeterminator(_startSide);
 
-            _board = new Board(_boardWidth);
-            _boardView.Init(_boardWidth, _clickableTextViewFactory);
-            _boardPresenter = new BoardPresenter(_board, _boardView, _determinator);
+            _board = new Board();
+            _gridClickableTextView.Init(Board.Width, _clickableTextViewFactory);
+            _boardPresenter = new BoardPresenter(_board, _determinator, _gridClickableTextView);
         }
 
         private void InitializeScore()
         {
-            _scoreCounter = new ScoreCounter(ScoreAmounts);
+            _scoreCounter = new ScoreCounter();
             _scorePresenter = new ScorePresenter(_scoreCounter, _scoreViews);
         }
 
-        private void InitializeButtons()
+        private void InitializeGeneralUI()
         {
-            _resetButtonPresenter = new CommandButtonPresenter(new RestartCommand(_board, _scoreCounter, _determinator), _resetButton);
+            _restartButtonPresenter = new SimpleButtonPresenter(_restartButton, Restart);
+            _messagePresenter = new MessagePresenter(_messageView);
         }
 
         private void OnEnable()
         {
             _boardPresenter.Activate();
             _scorePresenter.Activate();
-            _resetButtonPresenter.Activate();
-            
+            _restartButtonPresenter.Activate();
+            _messagePresenter.Activate();
+
             _board.Finished += OnFinished;
         }
 
@@ -74,28 +79,40 @@ namespace TicTacToe
         {
             _boardPresenter.Deactivate();
             _scorePresenter.Deactivate();
-            _resetButtonPresenter.Deactivate();
-            
+            _restartButtonPresenter.Deactivate();
+            _messagePresenter.Deactivate();
+
             _board.Finished -= OnFinished;
         }
         
-        private void OnFinished(BoardResult result, GameSide side)
+        private void PrepareForNewRound()
         {
-            switch (result)
-            {
-                case BoardResult.StillGoing:
-                    return;
-                case BoardResult.GameWon:
-                    _scoreCounter.TryGrantScore((int) side); // TODO AWFUL CONVERSION
-                    break;
-                case BoardResult.Tie:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(result), result, "Board Result is out of range! Something is terribly wrong!");
-            }
-
             _board.Reset();
             _determinator.Reset();
+        }
+
+        private void Restart()
+        {
+            PrepareForNewRound();
+            _scoreCounter.Reset();
+        }
+
+        // TODO Refactor (Switch statement)
+        private void OnFinished(BoardResult result, GameSide side)
+        {
+            var message = result switch
+            {
+                BoardResult.StillGoing 
+                    => throw new InvalidOperationException("Trying to finish game, while game is still going!"),
+                BoardResult.GameWon 
+                    => $"{side:G} has won!",
+                BoardResult.Tie 
+                    => "Tie!",
+                _ => throw new ArgumentOutOfRangeException(nameof(result), result,
+                    "Board Result is out of range! Something is terribly wrong!")
+            };
+            _scoreCounter.TryGrantScore(side);
+            _messagePresenter.Show(message, PrepareForNewRound);
         }
     }
 }

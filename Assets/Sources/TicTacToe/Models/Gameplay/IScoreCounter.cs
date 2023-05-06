@@ -1,13 +1,12 @@
 ﻿using System;
+using TicTacToe.Shared;
 
 namespace TicTacToe.Models.Gameplay
 {
     public interface IScoreCounter : IResettable
     {
-        public int ScoreAmounts { get; }
-        
-        event Action<int, int> ScoreUpdated;
+        event Action<GameSide, int> ScoreUpdated;
 
-        bool TryGrantScore(int side);
+        bool TryGrantScore(GameSide side);
     }
 }

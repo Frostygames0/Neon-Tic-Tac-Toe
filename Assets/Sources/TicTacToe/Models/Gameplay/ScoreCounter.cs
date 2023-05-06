@@ -1,37 +1,51 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using TicTacToe.Shared;
+using UnityEngine;
 
 namespace TicTacToe.Models.Gameplay
 {
     public class ScoreCounter : IScoreCounter
     {
-        private readonly int[] _scores;
-
-        public int ScoreAmounts => _scores.Length;
+        private readonly IDictionary<GameSide, int> _scores;
         
-        public event Action<int, int> ScoreUpdated;
+        public event Action<GameSide, int> ScoreUpdated;
 
-        public ScoreCounter(int scoreAmounts)
+        public ScoreCounter()
         {
-            _scores = new int[scoreAmounts];
+            _scores = new Dictionary<GameSide, int>();
+            
+            foreach (GameSide side in Enum.GetValues(typeof(GameSide)))
+            {
+                if (side == GameSide.Indeterminate)
+                    continue;
+                
+                _scores.Add(side, 0);
+            }
         }
 
-        public bool TryGrantScore(int score)
+        public bool TryGrantScore(GameSide side)
         {
-            if (score >= ScoreAmounts || score < 0)
+            if (!_scores.ContainsKey(side))
                 return false;
 
-            _scores[score] += 1;
-            ScoreUpdated?.Invoke(score, _scores[score]);
+            UpdateScoreAndRaise(side, _scores[side] + 1);
             return true;
         }
 
         public void Reset()
         {
-            for (int i = 0; i < ScoreAmounts; i++)
+            foreach (var side in _scores.Keys.ToList())
             {
-                _scores[i] = 0;
-                ScoreUpdated?.Invoke(i, _scores[i]);
+                UpdateScoreAndRaise(side, 0);
             }
+        }
+
+        private void UpdateScoreAndRaise(GameSide side, int score)
+        {
+            _scores[side] = score;
+            ScoreUpdated?.Invoke(side, _scores[side]);
         }
     }
 }

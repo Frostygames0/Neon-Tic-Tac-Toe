@@ -1,72 +1,35 @@
 ﻿using NUnit.Framework;
 using TicTacToe.Models.Gameplay;
+using TicTacToe.Shared;
 
 namespace TicTacToe.Tests.Models
 {
-    [TestFixture(2)]
     public class ScoreCounterTests
     {
-        private readonly int _scoreAmounts;
-        
         private IScoreCounter _scoreCounter;
 
-        public ScoreCounterTests(int scoreAmounts)
-        {
-            _scoreAmounts = scoreAmounts;
-        }
-        
         [SetUp]
         public void SetUp()
         {
-            _scoreCounter = new ScoreCounter(_scoreAmounts);
-        }
-        
-        [TestCase(0)]
-        public void GrantScore_GrantsScore_ReturnsTrue(int index)
-        {
-            _scoreCounter.ScoreUpdated += (ind, score) =>
-            {
-                Assert.True(ind == index);
-                Assert.True(score >= 1);
-                Assert.Pass();
-            };
-            
-            _scoreCounter.TryGrantScore(index);
-            
-            Assert.Fail();
+            _scoreCounter = new ScoreCounter();
         }
         
         [Test]
-        public void GrantScore_OutOfBoundsPositive_ReturnsFalse()
+        public void GrantScore_GrantsScore_ReturnsTrue([ValueSource(typeof(TestsData), nameof(TestsData.GameSideCases))] GameSide side)
         {
-            var positiveNumResult = _scoreCounter.TryGrantScore(_scoreAmounts);
+            var correctSide = false;
+            var scoreRaised = false;
             
-            Assert.False(positiveNumResult);
-        }
-        
-        [Test]
-        public void GrantScore_OutOfBoundsNegative_ReturnsFalse()
-        {
-            var negativeNumResult = _scoreCounter.TryGrantScore(-1);
-            
-            Assert.False(negativeNumResult);
-        }
-        
-        [TestCase(0)]
-        public void Reset_SuccessfullyResets_ReturnsTrue(int index)
-        {
-            _scoreCounter.TryGrantScore(index);
-            
-            _scoreCounter.ScoreUpdated += (ind, score) =>
+            _scoreCounter.ScoreUpdated += (sid, score) =>
             {
-                Assert.True(ind == index);
-                Assert.True(score == 0);
-                Assert.Pass();
+                correctSide = sid == side;
+                scoreRaised = score > 0;
             };
             
-            _scoreCounter.Reset();
-            
-            Assert.Fail();
+            _scoreCounter.TryGrantScore(side);
+
+            Assert.True(correctSide);
+            Assert.True(scoreRaised);
         }
     }
 }

@@ -1,23 +1,17 @@
 ﻿using NUnit.Framework;
 using TicTacToe.Models.Gameplay;
+using TicTacToe.Shared;
 
 namespace TicTacToe.Tests.Models
 {
-    [TestFixture(GameSide.Circle)]
     public class SideDeterminatorTests
     {
-        private readonly GameSide _startSide;
         private ISideDeterminator _sideDeterminator;
 
-        public SideDeterminatorTests(GameSide startSide)
-        {
-            _startSide = startSide;
-        }
-        
         [SetUp]
         public void SetUp()
         {
-            _sideDeterminator = new SideDeterminator(_startSide);
+            _sideDeterminator = new SideDeterminator(GameSide.Cross);
         }
         
         [Test]
@@ -25,7 +19,7 @@ namespace TicTacToe.Tests.Models
         {
             var determined = _sideDeterminator.Determine();
             
-            Assert.True(determined == _startSide);
+            Assert.True(determined == GameSide.Cross);
         }
         
         [Test]
@@ -35,7 +29,7 @@ namespace TicTacToe.Tests.Models
 
             var determinedSecond = _sideDeterminator.Determine();
             
-            Assert.True(determinedSecond != _startSide && determinedSecond != GameSide.Indeterminate);
+            Assert.True(determinedSecond != GameSide.Cross && determinedSecond != GameSide.Indeterminate);
         }
     }
 }

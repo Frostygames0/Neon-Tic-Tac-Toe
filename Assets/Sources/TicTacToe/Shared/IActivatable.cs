@@ -1,7 +1,7 @@
-﻿namespace TicTacToe
+﻿namespace TicTacToe.Shared
 {
     // An interface for any object that should be manually activated (without unity)
-    public interface IManuallyActivated
+    public interface IActivatable
     {
         void Activate();
 
