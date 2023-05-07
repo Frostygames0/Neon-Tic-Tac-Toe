@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using TicTacToe.Shared;
-using UnityEngine;
 
 namespace TicTacToe.Models.Gameplay
 {
