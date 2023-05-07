@@ -15,15 +15,15 @@ namespace TicTacToe.Models.Gameplay
         
         private readonly Tile[] _tiles;
 
-        private BoardResult _result;
+        private bool _stopped;
         
-        public event Action<BoardResult, GameSide> Finished;
+        public event Action<GameSide> Finished;
         public event Action<int, GameSide> TileUpdated;
 
         public Board()
         {
             _tiles = new Tile[Width * Width];
-            _result = BoardResult.StillGoing;
+            _stopped = false;
 
             for (int i = 0; i < _tiles.Length; i++)
             {
@@ -33,7 +33,7 @@ namespace TicTacToe.Models.Gameplay
 
         public bool TryMove(int index, GameSide side)
         {
-            if (_result != BoardResult.StillGoing)
+            if (_stopped)
                 return false;
             
             if (side == GameSide.Indeterminate)
@@ -47,7 +47,10 @@ namespace TicTacToe.Models.Gameplay
                 return false;
             
             TileUpdated?.Invoke(index, tile.Side);
-            CheckFinishingConditions();
+            
+            if(CheckWinner(out GameSide winner))
+                Finish(winner);
+            
             return true;
         }
 
@@ -64,35 +67,42 @@ namespace TicTacToe.Models.Gameplay
                 TileUpdated?.Invoke(i, GameSide.Indeterminate);
             }
 
-            _result = BoardResult.StillGoing;
+            _stopped = false;
         }
 
-        // TODO Replace this with something better, this is utterly terrible
-        private void CheckFinishingConditions()
+        // TODO Replace this with something better, this is utterly terrible (and not testable btw)
+        private bool CheckWinner(out GameSide winner)
         {
             foreach (var tup in WinCombos)
             {
-                if (_tiles[tup.Item1].Side == _tiles[tup.Item2].Side &&
-                    _tiles[tup.Item2].Side == _tiles[tup.Item3].Side &&
-                    _tiles[tup.Item3].Side == GameSide.Circle)
-                    Finish(BoardResult.GameWon, GameSide.Circle);
-                if (_tiles[tup.Item1].Side == _tiles[tup.Item2].Side &&
-                    _tiles[tup.Item2].Side == _tiles[tup.Item3].Side &&
-                    _tiles[tup.Item3].Side == GameSide.Cross)
-                    Finish(BoardResult.GameWon, GameSide.Cross);
-            }
-                
-            if(_tiles.All(tile => tile.Side != GameSide.Indeterminate))
-                Finish(BoardResult.Tie, GameSide.Indeterminate);
-        }
+                var side1 = _tiles[tup.Item1].Side;
+                var side2 = _tiles[tup.Item2].Side;
+                var side3 = _tiles[tup.Item3].Side;
 
-        private void Finish(BoardResult result, GameSide winner)
+                if (side1 != side2 || side2 != side3) 
+                    continue;
+                
+                if(side3 == GameSide.Indeterminate)
+                    continue;
+
+                winner = side3;
+                return true;
+            }
+
+            if (_tiles.All(tile => tile.Side != GameSide.Indeterminate))
+            {
+                winner = GameSide.Indeterminate;
+                return true;
+            }
+
+            winner = GameSide.Indeterminate;
+            return false;
+        }
+        
+        private void Finish(GameSide winner)
         {
-            if (result == BoardResult.StillGoing)
-                return;
-            
-            _result = result;
-            Finished?.Invoke(_result, winner);
+            _stopped = true;
+            Finished?.Invoke(winner);
         }
 
         private class Tile : IResettable

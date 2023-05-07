@@ -1,4 +1,5 @@
-﻿using TicTacToe.Models.Gameplay;
+﻿using System;
+using TicTacToe.Models.Gameplay;
 using TicTacToe.Shared;
 using TicTacToe.Views;
 
@@ -32,8 +33,18 @@ namespace TicTacToe.Presenters
         }
 
         private void OnTileUpdated(int index, GameSide side)
-            => _view.UpdateTileText(index, side.ConvertToCoolString());
-        
+        {
+            var signInText = side switch
+            {
+                GameSide.Circle => "O",
+                GameSide.Cross => "X",
+                GameSide.Indeterminate => "",
+                _ => throw new ArgumentOutOfRangeException(nameof(side), side, "Side is out of range! This should not happen, unless someone update Enum")
+            };
+            
+            _view.UpdateTileText(index, signInText);
+        }
+
         private void OnViewClicked(int index)
             => _model.TryMove(index, side: _sideDeterminator.Determine());
     }

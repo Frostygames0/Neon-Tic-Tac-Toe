@@ -80,22 +80,22 @@ namespace TicTacToe.Tests.Models
         [TestCaseSource(typeof(TestsData), nameof(TestsData.WinningCombosCases))]
         public void Finished_RaisesCorrectlyForWin_ReturnsTrue(int first, int second, int third)
         {
-            var correctResult = false;
-            _board.Finished += (res, _) => correctResult = res == BoardResult.GameWon;
+            var correctSide = false;
+            _board.Finished += (side) => correctSide = side == GameSide.Circle;
 
             _board.TryMove(first, GameSide.Circle);
             _board.TryMove(second, GameSide.Circle);
             _board.TryMove(third, GameSide.Circle);
             
-            Assert.True(correctResult);
+            Assert.True(correctSide);
         }
         
         [Test]
         public void Finished_RaisesCorrectlyForTie_ReturnsTrue()
         {
-            var correctResult = false;
+            var correctSide = false;
 
-            _board.Finished += (res, _) => correctResult = res == BoardResult.Tie;
+            _board.Finished += (side) => correctSide = side == GameSide.Indeterminate;
 
             _board.TryMove(0, GameSide.Circle);
             _board.TryMove(1, GameSide.Circle);
@@ -107,7 +107,7 @@ namespace TicTacToe.Tests.Models
             _board.TryMove(7, GameSide.Cross);
             _board.TryMove(8, GameSide.Circle);
             
-            Assert.True(correctResult);
+            Assert.True(correctSide);
         }
     }
 }

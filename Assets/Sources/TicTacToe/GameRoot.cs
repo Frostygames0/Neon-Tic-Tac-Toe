@@ -1,5 +1,4 @@
-﻿using System;
-using TicTacToe.Models.Gameplay;
+﻿using TicTacToe.Models.Gameplay;
 using TicTacToe.Presenters;
 using TicTacToe.Shared;
 using TicTacToe.Views;
@@ -96,22 +95,12 @@ namespace TicTacToe
             PrepareForNewRound();
             _scoreCounter.Reset();
         }
-
-        // TODO Refactor (Switch statement)
-        private void OnFinished(BoardResult result, GameSide side)
+        
+        private void OnFinished(GameSide side)
         {
-            var message = result switch
-            {
-                BoardResult.StillGoing 
-                    => throw new InvalidOperationException("Trying to finish game, while game is still going!"),
-                BoardResult.GameWon 
-                    => $"{side:G} has won!",
-                BoardResult.Tie 
-                    => "Tie!",
-                _ => throw new ArgumentOutOfRangeException(nameof(result), result,
-                    "Board Result is out of range! Something is terribly wrong!")
-            };
             _scoreCounter.TryGrantScore(side);
+
+            var message = side == GameSide.Indeterminate ? "Tie!" : $"{side:G} has won!";
             _messagePresenter.Show(message, PrepareForNewRound);
         }
     }
